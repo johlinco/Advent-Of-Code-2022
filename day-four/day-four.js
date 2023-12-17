@@ -11,19 +11,17 @@ function countEnveloppingSets(sets) {
     for (let set of sets) {
         set = set.replace(/-/g, ' ')
         set = set.split(",")
-        let firstFirst = parseInt(set[0][0])
-        let firstLast = parseInt(set[0][2])
-        let lastFirst = parseInt(set[1][0])
-        let lastLast = parseInt(set[1][2])
-        console.log(firstFirst, firstLast, lastFirst, lastLast)
+        let first = set[0].split(" ")
+        let last = set[1].split(" ")
+
+        let firstFirst = parseInt(first[0])
+        let firstLast = parseInt(first[1])
+        let lastFirst = parseInt(last[0])
+        let lastLast = parseInt(last[1])
+
         if (firstFirst >= lastFirst && firstLast <= lastLast) {
-            console.log(firstFirst, firstFirst, lastFirst, lastLast)
-            console.log('here)')
             count++
-        }
-        if (lastFirst >= firstFirst && lastLast <= firstLast) {
-            console.log(firstFirst, firstFirst, lastFirst, lastLast)
-            console.log('here')
+        } else if (lastFirst >= firstFirst && lastLast <= firstLast) {
             count++
         }
     }
@@ -31,5 +29,35 @@ function countEnveloppingSets(sets) {
     return count
 }
 
-console.log(countEnveloppingSets(example))
-console.log(countEnveloppingSets(input))
+function countOverlappingSets(sets) {
+    let count = 0
+    sets = sets.split(/\r?\n/)
+    console.log(sets)
+
+    for (let set of sets) {
+        set = set.replace(/-/g, ' ')
+        set = set.split(",")
+        let first = set[0].split(" ")
+        let last = set[1].split(" ")
+
+        let firstFirst = parseInt(first[0])
+        let firstLast = parseInt(first[1])
+        let lastFirst = parseInt(last[0])
+        let lastLast = parseInt(last[1])
+
+        if (firstFirst <= lastFirst && firstLast >= lastFirst) {
+            console.log(firstFirst, firstLast, lastFirst, lastLast)
+            count++
+        } else if (lastFirst <= firstFirst && lastLast >= firstFirst) {
+            console.log(firstFirst, firstLast, lastFirst, lastLast)
+            count++
+        }
+    }
+   
+    return count
+}
+
+// console.log(countEnveloppingSets(example))
+// console.log(countEnveloppingSets(input))
+console.log(countOverlappingSets(example))
+console.log(countOverlappingSets(input))
