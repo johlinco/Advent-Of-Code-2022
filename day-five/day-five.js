@@ -16,7 +16,8 @@ function findStackCountRow(rows) {
 
 function stacksBuilder(rows, stackCountRow) {
     let stacks = []
-    for (let i = 1; i<rows[stackCountRow].length; i += 4) {
+
+    for (let i = 1; i < rows[stackCountRow].length; i += 4) {
         stacks.push([])
     }
 
@@ -32,7 +33,9 @@ function stacksBuilder(rows, stackCountRow) {
 }
 
 function getMoves(row) {
-    // get integer values of move and stacks
+    // get integer values of # of items to MOVE and stacks that items
+    // are moving TO and FROM (subtracting 1 from TO and FROM values
+    // to get to 0 based array positions)
     if (row[6] === " ") {
         var move = parseInt(row[5])
         var from = parseInt(row[12]) - 1
@@ -98,6 +101,7 @@ function getTopOfStacks9001(rows) {
 }
 
 
-
+console.log(getTopOfStacks9000(exampleRows))
+console.log(getTopOfStacks9000(inputRows))
 console.log(getTopOfStacks9001(exampleRows))
 console.log(getTopOfStacks9001(inputRows))
