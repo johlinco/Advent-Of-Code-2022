@@ -79,4 +79,61 @@ function findVisibleTrees(forest) {
 
 }
 
+function viewUp(forest, row, col) {
+    let view = 1
+    let currentTree = parseInt(forest[row][col])
+    while (row-1 > 0 && currentTree > parseInt(forest[row-1][col])) {
+        view++
+        row--
+    }
+    return view
+}
+
+function viewDown(forest, row, col) {
+    let view = 1
+    let currentTree = parseInt(forest[row][col])
+    while (row+1 < forest.length - 1 && currentTree > parseInt(forest[row+1][col])) {
+        view++
+        row++
+    }
+    return view
+}
+
+function viewLeft(forest, row, col) {
+    let view = 1
+    let currentTree = parseInt(forest[row][col])
+    while (col-1 !== 0 && currentTree > parseInt(forest[row][col-1])) {
+        view++
+        col--
+    }
+
+    return view
+}
+
+function viewRight(forest, row, col) {
+    let view = 1
+    let currentTree = parseInt(forest[row][col])
+    while (col+1 !== forest[0].length - 1 && currentTree > parseInt(forest[row][col+1])) {
+        view++
+        col++
+    }
+    return view
+}
+
+
+function findHighestScenicScore(forest) {
+    let highestScenicScore = 0
+
+    for (let row = 0; row < forest.length; row ++) {
+        for (let col = 0; col < forest[0].length; col++) {
+            let scenicScore = viewUp(forest, row, col) * viewDown(forest, row, col) * viewLeft(forest, row, col) * viewRight(forest, row, col)
+            highestScenicScore = Math.max(highestScenicScore, scenicScore)
+        }
+    }
+    return highestScenicScore
+}
+
+console.log(findVisibleTrees(exampleRows))
 console.log(findVisibleTrees(inputRows))
+console.log(findHighestScenicScore(exampleRows))
+console.log(findHighestScenicScore(inputRows))
