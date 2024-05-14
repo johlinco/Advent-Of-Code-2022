@@ -17,10 +17,11 @@ class Directory {
 function sumOfDirsUnderOneHundredK(commands) {
     let dirStack = [];
     let currDir = "/";
-    dirStack.push(currDir);
     let root = new Directory("/")
     let dirTree = {};
+ 
     dirTree["/"] = root
+    dirStack.push(currDir);
 
     for (const command of commands) {
         let commandArray = command.split(" ")
@@ -32,17 +33,20 @@ function sumOfDirsUnderOneHundredK(commands) {
                 } else {
                     dirStack.push(commandArray[2]);
                     currDir = commandArray[2];
-                    
                 }
-                console.log(dirStack)
             }
         } else if (commandArray[0] === "dir") {
-
+            let dirName = commandArray[1];
+            if (!dirTree[dirName]) {
+                let dir = new Directory()
+                dirTree[dirName] = dir;
+                dirTree[currDir].children.push(dirName);
+            }
         } else {
-
+            dirTree[currDir].size += parseInt(commandArray[0])
         }
     }
-    return dirStack
+    return dirTree
 }
 
 console.log(sumOfDirsUnderOneHundredK(exampleRows));
