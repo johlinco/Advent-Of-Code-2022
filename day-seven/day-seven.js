@@ -18,24 +18,26 @@ class Directory {
 
 function sumOfDirsUnderOneHundredK(commands) {
     let currDir = "/";
-    let root = new Directory("/", "")
+    let root = new Directory("/")
     let dirTree = {};
  
     dirTree["/"] = root
     console.log(dirTree["/"])
-    for (const command of commands) {
+    for (let i = 0; i < 40; i++) {
+        let command = commands[i]
         let commandArray = command.split(" ")
-       // console.log(dirTree[currDir], commandArray)
+       console.log(commandArray)
         if (commandArray[0] === "$") {
             if (commandArray[1] === "cd") {
                 
                 if (commandArray[2] === "..") {
-                    if (currDirr = "/") continue;
+                    if (currDir = "/") continue;
                     currDir = dirTree[currDir].parent
                 } else if (commandArray[2] === "/") {
                     currDir = "/"
                 } else {
                     currDir = commandArray[2];
+                    console.log(currDir)
                 }
             }
         } else if (commandArray[0] === "dir") {
@@ -49,22 +51,27 @@ function sumOfDirsUnderOneHundredK(commands) {
         } else {
             dirTree[currDir].size += parseInt(commandArray[0])
             let upParent = dirTree[currDir].parent
+            console.log(currDir, upParent)
             while (upParent !== "") {
                 dirTree[upParent].size += parseInt(commandArray[0])
                 upParent = dirTree[upParent].parent
+                // console.log(upParent)
             }
         }
     }
 
+
     let underOneHundredKSum = 0
 
     function dfs(root) {
-        console.log(root)
+        // console.log(root.name, root.size)
         if (!root) return
         if (root.size <= 100000) {
             underOneHundredKSum += root.size
+            // console.log("yes", underOneHundredKSum)
         }
         for (const child of root.children) {
+            // console.log("child", child)
             dfs(dirTree[child])
         }
     }
