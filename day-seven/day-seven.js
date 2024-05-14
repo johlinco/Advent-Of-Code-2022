@@ -11,6 +11,7 @@ class Directory {
     constructor() {
         this.children = [];
         this.size = 0;
+        this.parent = ""
     }
 }
 
@@ -40,13 +41,34 @@ function sumOfDirsUnderOneHundredK(commands) {
             if (!dirTree[dirName]) {
                 let dir = new Directory()
                 dirTree[dirName] = dir;
+                dirTree[dirName].parent = currDir;
                 dirTree[currDir].children.push(dirName);
             }
         } else {
             dirTree[currDir].size += parseInt(commandArray[0])
+            let upParent = dirTree[currDir].parent
+            while (upParent !== "") {
+                dirTree[upParent].size += parseInt(commandArray[0])
+                upParent = dirTree[upParent].parent
+            }
         }
     }
-    return dirTree
+
+    let underOneHundredKSum = 0
+
+    function dfs(root) {
+        if (!root) return
+        if (root.size <= 100000) {
+            underOneHundredKSum += root.size
+        }
+        for (const child of root.children) {
+            console.log(dirTree[child])
+            dfs(dirTree[child])
+        }
+    }
+    dfs(dirTree["/"]) 
+    return underOneHundredKSum
 }
 
 console.log(sumOfDirsUnderOneHundredK(exampleRows));
+console.log(sumOfDirsUnderOneHundredK(inputRows));
