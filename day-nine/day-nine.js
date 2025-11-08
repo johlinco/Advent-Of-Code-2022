@@ -1,3 +1,4 @@
+const { triggerAsyncId } = require("async_hooks");
 const { FORMERR } = require("dns");
 const fs = require("fs");
 
@@ -8,40 +9,11 @@ const exampleRows = example.split(/\r?\n/)
 const inputRows = input.split(/\r?\n/)
 
 
-/**
- * 
- * for each set of directions
- *      loop through directions and note head position and then move tail based on head if needed
- *          determining tail movement
-                
- *      Add tail stringified tail position to set "hx,hy-tx,ty"
- *  
- */
-
-function tailPositionReporter(directions) {
-    let tailPositionSet = new Set()
-    let hx = 0
-    let hy = 0
-    let tx = 0
-    let ty = 0
-    
-    for (const row of directions) {
-        const [dir, reps] = row.split(" ")
-        // head moving
-        for (let i = 0; i < reps; i++) {
-            if (dir === "U") {
-                hy++
-            } else if (dir === "D") {
-                hy--
-            } else if (dir === "L") {
-                hx--
-            } else if (dir === "R") {
-                hx++
-            }
-
-             // tail moving
+const trailingKnotMover = (hx, hy, tx, ty) => {
+        // tail moving
         let yDiff = hy - ty
         let xDiff = hx - tx
+        console.log('xDiff', xDiff, 'yDiff', yDiff)
         // up case hy - ty is 2 and hx - tx is 0
         if (yDiff === 2 &&  xDiff === 0) {
             ty++
@@ -85,17 +57,96 @@ function tailPositionReporter(directions) {
             tx--
             ty++
         }
-        tailPositionSet.add(`${tx.toString()},${ty.toString()}`)
-        // console.log('head', hx, hy)
-        // console.log('tail', tx, ty)
-        // console.log(`${tx.toString()},${ty.toString()}`)
-        // console.log(tailPositionSet)
+        return [tx, ty]
+}
+
+function tailPositionReporter(directions) {
+    let tailPositionSet = new Set()
+    let hx = 0
+    let hy = 0
+    let tx = 0
+    let ty = 0
+    
+    for (const row of directions) {
+        const [dir, reps] = row.split(" ")
+        // head moving
+        for (let i = 0; i < reps; i++) {
+            if (dir === "U") {
+                hy++
+            } else if (dir === "D") {
+                hy--
+            } else if (dir === "L") {
+                hx--
+            } else if (dir === "R") {
+                hx++
+            }
+            [tx, ty] = trailingKnotMover(hx, hy, tx, ty)
+            tailPositionSet.add(`${tx.toString()},${ty.toString()}`)
         }
     }
 
     return tailPositionSet.size
 }
-console.log(tailPositionReporter(exampleRows))
-console.log(tailPositionReporter(inputRows))
+
+function longTailPositionReporter(directions) {
+    let tailPositionSet = new Set()
+    let hx = 0
+    let hy = 0
+    let oneX = 0
+    let oneY = 0
+    let twoX = 0
+    let twoY = 0
+    let threeX = 0
+    let threeY = 0
+    let fourX = 0
+    let fourY = 0
+    let fiveX = 0
+    let fiveY = 0
+    let sixX = 0
+    let sixY = 0
+    let sevenX = 0
+    let sevenY = 0
+    let eightX = 0
+    let eightY = 0
+    let tx = 0
+    let ty = 0
+    
+    for (const row of directions) {
+        const [dir, reps] = row.split(" ")
+        // head moving
+        for (let i = 0; i < reps; i++) {
+            if (dir === "U") {
+                hy++
+            } else if (dir === "D") {
+                hy--
+            } else if (dir === "L") {
+                hx--
+            } else if (dir === "R") {
+                hx++
+            }
+            [oneX, oneY] = trailingKnotMover(hx, hy, oneX, oneY)
+            [twoX, twoY] = trailingKnotMover(oneX, oneY, twoX, twoY)
+            [threeX, threeY] = trailingKnotMover(twoX, twoY, threeX, threeY)
+            [fourX, fourY] = trailingKnotMover(threeX, threeY, fourX, fourY)
+            [fiveX, fiveY] = trailingKnotMover(fourX, fourY, fiveX, fiveY)
+            [sixX, sixY] = trailingKnotMover(fiveX, fiveY, sixX, sixY)
+            [sevenX, sevenY] = trailingKnotMover(sixX, sixY, sevenX, sevenY)
+            [eightX, eightY] = trailingKnotMover(sevenX, sevenY, eightX, eightY)
+            [tx, ty] = trailingKnotMover(eightX, eightY, ty, tx)
+            console.log('head', hx, hy)
+            console.log('one', oneX, oneY)
+            tailPositionSet.add(`${tx.toString()},${ty.toString()}`)
+        }
+    }
+
+    return tailPositionSet.size
+}
+
+
+// console.log(tailPositionReporter(exampleRows))
+// console.log(tailPositionReporter(inputRows))
+
+console.log(longTailPositionReporter(exampleRows))
+//console.log(longTailPositionReporter(inputRows))
 
 
