@@ -85,9 +85,9 @@ const CRTDrawer = (directions, height, width) => {
     return CRT.map(row => row.join("")).join("\n")
 }
 
-// console.log(signalStrength(exampleRows))
+console.log(signalStrength(exampleRows))
 
-// console.log(signalStrength(inputRows))
+console.log(signalStrength(inputRows))
 
-// console.log(CRTDrawer(exampleRows, 6, 40))
+console.log(CRTDrawer(exampleRows, 6, 40))
 console.log(CRTDrawer(inputRows, 6, 40))
