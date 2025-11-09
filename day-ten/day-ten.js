@@ -36,5 +36,58 @@ const signalStrength = (directions) => {
     return signalSum
 }
 
-console.log(signalStrength(exampleRows))
-console.log(signalStrength(inputRows))
+
+/**
+ * 
+ * for each cycle i need to check if the current x position has a pixel in it in the sprite row and then put put a pixel there  if it does.
+ * after every twenty cycles, I add that row to the CRT.
+ * 
+ * 
+ */
+const CRTDrawer = (directions, height, width) => {
+
+    const rowDrawer = (startingPos) => {
+        let row = new Array(width).fill(".")
+        for (let i = startingPos; i < startingPos + width; i++) {
+            if (spriteMatches.has(i)) {
+                row[i - (width * Math.floor(i / width))] = "#"
+            }
+        }
+        CRT.push(row)
+    }
+
+    const spriteMatchPusher = () => {
+        const numCheck = cycle - (width * Math.floor(cycle / width))
+        if (numCheck <= spritePos + 1 && numCheck >= spritePos - 1) {
+            spriteMatches.add(cycle)
+        }
+    }
+    let spritePos = 1
+    let cycle = -1
+    let spriteMatches = new Set()
+    let CRT = []
+    for (const row of directions) {
+        if (row === "noop") {
+            cycle++
+            spriteMatchPusher()
+        } else if (row.split(" ")[0] === "addx") {
+            cycle++
+            spriteMatchPusher()
+            cycle++
+            spriteMatchPusher()
+            spritePos += parseInt(row.split(" ")[1])
+        } 
+    }
+    for (let i = 0; i < height; i++) {
+        rowDrawer(i*width)
+    }
+
+    return CRT.map(row => row.join("")).join("\n")
+}
+
+// console.log(signalStrength(exampleRows))
+
+// console.log(signalStrength(inputRows))
+
+// console.log(CRTDrawer(exampleRows, 6, 40))
+console.log(CRTDrawer(inputRows, 6, 40))
