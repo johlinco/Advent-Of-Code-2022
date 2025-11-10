@@ -10,18 +10,18 @@ const inputRows = input.split(/\r?\n/)
 
 const fileTreeBuilder = (commands) => {
     let fileTree = {}
-    let currDir
+    let currDir = []
 
     for (const command of commands) {
         let splitCommand = command.split(" ")
         if (splitCommand[1] === 'cd') {
             if (splitCommand[2] === "..") {
-                
+                currDir.pop()
             } else {
-                currDir = currDir + "/" + splitCommand[2]
+                currDir.push(splitCommand[2])
             }
         }
-        console.log(splitCommand)
+        console.log(splitCommand, currDir)
     }
 }
 
