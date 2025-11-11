@@ -7,20 +7,11 @@ const example = fs.readFileSync("example.txt", "utf8");
 const exampleRows = example.split(/\r?\n/)
 const inputRows = input.split(/\r?\n/)
 
-/**
- * 
- * dir = {
- *      parent: string,
- *      childrenDirs: array,
- *      files: array
- *  }
- * 
- */
-
-const fileTreeBuilder = (commands) => {
+const fileTreeManager = (commands) => {
     let fileTree = {}
     let currDir = []
     let sumOfDirsSizedLessThan100K = 0
+    let allDirSizes = []
 
     for (const command of commands) {
         let splitCommand = command.split(" ")
@@ -62,25 +53,27 @@ const fileTreeBuilder = (commands) => {
             sumOfDirsSizedLessThan100K += fileSize
         }
         fileTree[dir].bytes = fileSize
+        allDirSizes.push(fileSize)
+
     return fileSize
     }
     dirSizer("/")
-    return sumOfDirsSizedLessThan100K
+    const diskSpace = 70000000
+    const spaceUsed = fileTree["/"].bytes
+    const freeSpace =  diskSpace - spaceUsed 
+    const needToDelete = 30000000 - freeSpace
+    let minDirSizeGreaterThanRequired = Infinity
+    for (const dirSize of allDirSizes) {
+        if (dirSize > needToDelete && dirSize < minDirSizeGreaterThanRequired) {
+            minDirSizeGreaterThanRequired = dirSize
+        }
+    }
+    return [sumOfDirsSizedLessThan100K, minDirSizeGreaterThanRequired]
 }
 
-const dirSizer = (dir) => {
-    const fileTree = fileTreeBuilder(exampleRows)
-    let fileSize = 0
-    for (let i = 0; i < fileTree[dir].files.length; i++) {
-        fileSize += fileTree[dir].files[i].size
-    }
-    for (let i = 0; i < fileTree[dir].children.length; i++) {
-        let child = dir + "/" + fileTree[dir].children[i]
-        fileSize += dirSizer(child)
-    }
-    fileTree[dir].megabytes = fileSize
-    return fileSize
-}
-console.log(fileTreeBuilder(exampleRows))
-console.log(fileTreeBuilder(inputRows))
+
+console.log(fileTreeManager(exampleRows)[0])
+console.log(fileTreeManager(inputRows)[0])
+console.log(fileTreeManager(exampleRows)[1])
+console.log(fileTreeManager(inputRows)[1])
 
