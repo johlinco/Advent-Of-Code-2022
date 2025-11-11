@@ -20,6 +20,7 @@ const inputRows = input.split(/\r?\n/)
 const fileTreeBuilder = (commands) => {
     let fileTree = {}
     let currDir = []
+    let sumOfDirsSizedLessThan100K = 0
 
     for (const command of commands) {
         let splitCommand = command.split(" ")
@@ -46,9 +47,25 @@ const fileTreeBuilder = (commands) => {
                 size: parseInt(splitCommand[0])
             })
         }
-        //console.log(splitCommand, currDir, JSON.stringify(fileTree))
     }
-    return fileTree
+
+    const dirSizer = (dir) => {
+        let fileSize = 0
+        for (let i = 0; i < fileTree[dir].files.length; i++) {
+            fileSize += fileTree[dir].files[i].size
+        }
+        for (let i = 0; i < fileTree[dir].children.length; i++) {
+            let child = dir + "/" + fileTree[dir].children[i]
+            fileSize += dirSizer(child)
+        }
+        if (fileSize <= 100_000) {
+            sumOfDirsSizedLessThan100K += fileSize
+        }
+        fileTree[dir].bytes = fileSize
+    return fileSize
+    }
+    dirSizer("/")
+    return sumOfDirsSizedLessThan100K
 }
 
 const dirSizer = (dir) => {
@@ -56,8 +73,14 @@ const dirSizer = (dir) => {
     let fileSize = 0
     for (let i = 0; i < fileTree[dir].files.length; i++) {
         fileSize += fileTree[dir].files[i].size
-        console.log(fileSize)
     }
+    for (let i = 0; i < fileTree[dir].children.length; i++) {
+        let child = dir + "/" + fileTree[dir].children[i]
+        fileSize += dirSizer(child)
+    }
+    fileTree[dir].megabytes = fileSize
+    return fileSize
 }
 console.log(fileTreeBuilder(exampleRows))
-dirSizer("/")
+console.log(fileTreeBuilder(inputRows))
+
