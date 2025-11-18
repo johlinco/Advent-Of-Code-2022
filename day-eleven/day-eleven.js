@@ -89,5 +89,49 @@ const monkeyBusinessProduct = (directions) => {
     return first * second
 }
 
+const monkeyBusinessProductUnrestrained = (directions) => {
+    let monkeys = monkeysBuilder(directions)
+    for (let i = 0; i < 1000; i++) {
+        for (let i = 0; i < monkeys.length; i++) {
+            while (monkeys[i].caughtItems.length) {
+                monkeys[i].inspections++
+                let item = monkeys[i].caughtItems.pop()
+                let num =  monkeys[i].math[1] === "old" ? item : parseInt(monkeys[i].math[1])
+                let action = monkeys[i].math[0]
+                let divisor = monkeys[i].test
+                if (action === "*") {
+                    item *= num
+                } else {
+                    item += num
+                }
+                let trueMonkey = monkeys[i].trueMonkey
+                let falseMonkey = monkeys[i].falseMonkey
+                if (item % divisor === 0) {
+                    monkeys[trueMonkey].caughtItems.push(item)
+                } else {
+                    monkeys[falseMonkey].caughtItems.push(item)
+                }
+            }
+        }
+    }
+    let first = 0
+    let second = 0
+    for (let i = 0; i < monkeys.length; i++) {
+        let num = monkeys[i].inspections
+        if (num > first) {
+            second = first
+            first = num
+        } else if (num > second) {
+            second = num
+        }
+    }
+
+
+    console.log(monkeys)
+    return first * second
+}
+
 console.log(monkeyBusinessProduct(exampleRows))
 console.log(monkeyBusinessProduct(inputRows))
+console.log(monkeyBusinessProductUnrestrained(exampleRows))
+console.log(monkeyBusinessProductUnrestrained(inputRows))
